@@ -62,7 +62,6 @@ export default AddProduct;
 
 import React, { useState, useEffect } from 'react';
 import { fetchProducts, updateProductApi, deleteProductApi, getProductDetailsApi } from '../API/api';
-import { useCart } from '../context/CartContext'; // Import Cart Context
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -70,7 +69,7 @@ export default function Products() {
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalProduct, setModalProduct] = useState(null); // State for Modal
-  const { cartCount, addToCart } = useCart(); // Using Cart Context
+  const { itemCount, addItem } = useCart(); // Using Cart Context - correct destructuring
 
   useEffect(() => {
     loadProducts();
@@ -119,9 +118,23 @@ export default function Products() {
     setModalProduct(null); // Close Modal
   };
 
+  const handleAddToCart = (product) => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image
+    });
+  };
+
   return (
     <div className="p-8">
       <h2 className="text-2xl font-bold mb-4">Products</h2>
+      
+      {/* Display cart count */}
+      <div className="mb-4">
+        <p className="text-sm text-gray-600">Items in cart: {itemCount}</p>
+      </div>
 
       <div className="mb-4 flex flex-wrap gap-4">
         <input
@@ -162,7 +175,7 @@ export default function Products() {
             <p className="text-gray-700">${product.price}</p>
 
             <button
-              onClick={() => { addToCart(); }}
+              onClick={() => handleAddToCart(product)} // Pass the actual product
               className="mt-4 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700"
             >
               Add to Cart
@@ -192,6 +205,12 @@ export default function Products() {
             <h3 className="text-xl font-semibold">{modalProduct.name}</h3>
             <p>{modalProduct.description}</p>
             <p className="mt-2">${modalProduct.price}</p>
+            <button
+              onClick={() => handleAddToCart(modalProduct)}
+              className="mt-4 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 mr-2"
+            >
+              Add to Cart
+            </button>
             <button
               onClick={closeModal}
               className="mt-4 bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700"
