@@ -1,5 +1,6 @@
 import React from 'react'
 import { Route, BrowserRouter as Router, Routes } from "react-router"
+import { CartProvider } from './context/Cartcontext'
 import Homepage from './pages/Homepage'
 import AboutUs from './pages/AboutUs'
 import ContactUs from './pages/ContactUs'
