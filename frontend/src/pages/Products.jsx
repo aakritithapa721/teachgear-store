@@ -61,7 +61,7 @@ export default AddProduct;
 */
 
 import React, { useState, useEffect } from 'react';
-import { fetchProducts, updateProductApi, deleteProductApi, getProductDetailsApi } from '../API/api';
+import { fetchProducts, updateProductApi, deleteProductApi, getProductDetailsApi } from '../API/Api';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
