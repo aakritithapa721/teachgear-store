@@ -15,6 +15,7 @@ import Products from './pages/Products'
 
 const App = () => {
   return (
+    <CartProvider>
     <Router>
       <Toaster/>
       <Navbar />
@@ -57,6 +58,7 @@ const App = () => {
       
       </Routes>
     </Router>
+    </CartProvider>
   )
 }
 
