@@ -1,66 +1,4 @@
-/*import { useState } from "react";
-import { addProductApi } from "../API/Api"; 
-import toast from "react-hot-toast";
-
-function AddProduct() {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [image, setImage] = useState(null);
-  const [cart, setCart] = useState([]);
-
-  const submit = async (e) => {
-    e.preventDefault();
-    if (!name || !description || !price || !image)
-      return toast.error("All fields required");
-
-    try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("description", description);
-      formData.append("price", price);
-      formData.append("image", image);
-
-      const res = await addProductApi(formData);
-      if (res?.data?.success) {
-        toast.success("Product added");
-        setCart([...cart, { name, description, price }]);
-        setName(""); setDescription(""); setPrice(""); setImage(null);
-      } else toast.error(res.data.message);
-    } catch (err) {
-      toast.error("Error adding product");
-    }
-  };
-
-  return (
-    <div>
-      <form onSubmit={submit} className="mt-10">
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" className="border m-2 p-2" />
-        <input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" className="border m-2 p-2" />
-        <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="border m-2 p-2" />
-        <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} className="m-2" />
-        <button type="submit" className="bg-red-300 text-white p-2 ml-2">Add Product</button>
-      </form>
-
-      {cart.length > 0 && (
-        <div className="mt-4">
-          <h3>Cart</h3>
-          <ul>
-            {cart.map((item, i) => (
-              <li key={i}>{item.name} - ${item.price}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-}
-
-export default AddProduct;
-
-*/
-
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { fetchProducts, updateProductApi, deleteProductApi, getProductDetailsApi } from '../API/Api';
 import { useCart } from '../context/Cartcontext'; // assuming this is your Cart context
 
@@ -185,7 +123,9 @@ export default function Products() {
               onClick={() => handleViewDetails(product.id)}
             />
             <h3 className="font-semibold">{product.name}</h3>
-            <p className="text-gray-700">${product.price}</p>
+            <p className="text-gray-700">
+              {new Intl.NumberFormat('en-NP', { style: 'currency', currency: 'NPR' }).format(product.price)}
+            </p>
 
             <button
               onClick={() => handleAddToCart(product)}
@@ -222,7 +162,9 @@ export default function Products() {
           >
             <h3 className="text-xl font-semibold">{modalProduct.name}</h3>
             <p>{modalProduct.description}</p>
-            <p className="mt-2">${modalProduct.price}</p>
+            <p className="mt-2">
+              {new Intl.NumberFormat('en-NP', { style: 'currency', currency: 'NPR' }).format(modalProduct.price)}
+            </p>
             <button
               onClick={() => handleAddToCart(modalProduct)}
               className="mt-4 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 mr-2"
