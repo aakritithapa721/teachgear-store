@@ -20,35 +20,32 @@ function Register() {
 
     if (password.length < 8) {
       toast.error('Password must be at least 8 characters long');
-      nameInputRef.current?.focus();
       return;
     }
 
     setIsLoading(true);
     try {
-      const data = { name, email, password }; // Updated to match table schema
+      const data = { username: name, email, password };
       const response = await createUserApi(data);
-      console.log('API Response:', response); // Debug: Log full response
 
-      // Enhanced success detection
-      const isSuccess = 
-        (response?.status === 200 || response?.status === 201 || response?.status === 204) ||
-        (response?.data?.success === true || response?.data?.success === 'true') ||
-        (response?.data?.message && response?.data?.message.toLowerCase().includes('successful')) ||
-        (response?.data?.user) ||
-        (response?.data?.id); // Check for auto-incremented id
-      if (isSuccess) {
-        toast.success(response?.data?.message || 'Registration successful!');
+      console.log('API Response:', response);
+
+      const success =
+        response?.success === true ||
+        response?.message?.toLowerCase().includes('success') ||
+        response?.user;
+
+      if (success) {
+        toast.success(response.message || 'Registration successful!');
         setTimeout(() => {
           navigate('/login');
-          nameInputRef.current?.focus();
         }, 1000);
       } else {
-        toast.error(response?.data?.message || 'Registration failed. Please check your details and try again.');
+        toast.error(response.message || 'Registration failed. Please try again.');
       }
     } catch (err) {
       console.error('Error creating user:', err);
-      toast.error(err?.response?.data?.message || 'An error occurred during registration. Please try again later.');
+      toast.error(err?.response?.data?.message || 'Registration failed. Please try again later.');
     } finally {
       setIsLoading(false);
     }
