@@ -66,12 +66,12 @@ const App = () => {
 export default App
 */
 import React from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'; // Corrected import
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { CartProvider } from './context/Cartcontext';
 import Homepage from './pages/Homepage';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
-import Navbar from './components/Navbar'; // Adjusted path based on file tree
+import Navbar from './components/Navbar'; // Confirmed path
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Products from './pages/Products';
@@ -84,14 +84,12 @@ const App = () => {
         <Toaster />
         <Navbar />
         <Routes>
-          <Route path="/" element={<Homepage />} /> {/* Root path */}
+          <Route path="/" element={<Homepage />} />
           <Route path="/about" element={<AboutUs />} />
-          <Route path="/contact-us" element={<ContactUs />} /> {/* Consistent naming */}
+          <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/products" element={<Products />} />
-          {/* Remove ListandKeys and FormData until verified */}
-          {/* <Route path="/listandkeys" element={<ListandKeys />} /> */}
         </Routes>
       </Router>
     </CartProvider>
