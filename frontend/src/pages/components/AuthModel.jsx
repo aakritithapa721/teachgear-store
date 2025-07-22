@@ -219,4 +219,4 @@ const AuthModal = ({ isOpen, onClose, darkMode }) => {
   );
 };
 
-export default AuthMoal;
+export default AuthModal;
