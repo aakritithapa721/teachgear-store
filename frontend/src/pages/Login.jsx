@@ -64,7 +64,7 @@ export default Login
 
 import React, { useState } from 'react';
 import { toast } from 'react-hot-toast'; // Ensure react-toastify is installed
-import jwtDecode from 'jwt-decode'; // Ensure jwt-decode is installed
+import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom'; // For navigation, ensure React Router is set up
 import { LoginUserApi } from '../API/Api'; // Adjust the import path to your API service file
 
