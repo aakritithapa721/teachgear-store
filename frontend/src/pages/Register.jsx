@@ -57,7 +57,7 @@ import React, { useState } from 'react';
 import { createUserApi } from '../API/Api';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import AuthModal from './components/Authmodal'; // Confirmed path
+import AuthModal from './components/AuthModal'; // Confirmed path
 
 function Register() {
   const [name, setName] = useState('');

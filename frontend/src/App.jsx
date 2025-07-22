@@ -76,6 +76,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Products from './pages/Products';
 import { Toaster } from 'react-hot-toast';
+import UserDashboard from './pages/User_dashboard'; 
 
 const App = () => {
   return (
@@ -90,6 +91,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/dashboard" element={<UserDashboard />} /> {/* ✅ Add this line */}
         </Routes>
       </Router>
     </CartProvider>

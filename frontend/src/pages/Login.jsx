@@ -62,7 +62,7 @@ function Login() {
 export default Login
 */
 
-import React, { useState } from 'react';
+/*import React, { useState } from 'react';
 import { toast } from 'react-hot-toast'; // Ensure react-toastify is installed
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom'; // For navigation, ensure React Router is set up
@@ -83,7 +83,7 @@ function Login() {
         email,
         password,
       };
-      const response = await loginUserApi(data);
+      const response = await LoginUserApi(data);
 
       if (response?.data?.success) {
         localStorage.setItem('token', response?.data?.token);
@@ -134,10 +134,90 @@ function Login() {
           Login
         </button>
       </form>
-      {/* Remove live preview in production, or keep for debugging */}
-      {/* <p>Live preview</p>
+    */
+      /* <p>Live preview</p>
       <p>{email}</p>
-      <p>{password}</p> */}
+      <p>{password}</p> */
+    /*</div>
+  );
+}
+
+export default Login;*/
+import React, { useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import { LoginUserApi } from '../API/Api';
+
+function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const submit = async () => {
+    if (!email || !password) {
+      return toast.error('Please enter all fields');
+    }
+
+    try {
+      const data = { email, password };
+      const response = await LoginUserApi(data);
+
+      if (response?.data?.success) {
+        const token = response.data.token;
+        localStorage.setItem('token', token);
+        toast.success(response.data.message);
+
+        // Decode token
+        const decode = jwtDecode(token);
+
+        // Optional: store additional user info
+        localStorage.setItem('userId', decode.id);      // or decode._id
+        localStorage.setItem('userEmail', decode.email);
+        localStorage.setItem('userRole', decode.role);
+
+        // Redirect with short delay
+        setTimeout(() => {
+          if (decode.role === 'admin') {
+            navigate('/homepage');
+          } else {
+            navigate('/dashboard');
+          }
+        }, 1000); // 1 second delay
+      } else {
+        toast.error(response?.data?.message);
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'An error occurred');
+    }
+  };
+
+  return (
+    <div>
+      <form className="mt-10" onSubmit={(e) => { e.preventDefault(); submit(); }}>
+        <input
+          type="text"
+          name="email"
+          value={email}
+          className="border border-amber-300 m-2 p-2"
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="email"
+        />
+        <input
+          type="password"
+          name="password"
+          value={password}
+          className="border border-amber-300 m-2 p-2"
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="password"
+        />
+        <button
+          type="submit"
+          className="bg-green-400 text-white rounded-sm p-3 ml-4"
+        >
+          Login
+        </button>
+      </form>
     </div>
   );
 }
