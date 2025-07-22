@@ -123,7 +123,7 @@ export default function Products() {
             onClick={() => handleViewDetails(product.id)}
           >
             <img
-              src={product.image || 'https://via.placeholder.com/150'}
+              src={product.image ? `/uploads/${product.image}` : 'https://via.placeholder.com/150'}
               alt={product.name}
               className="mb-4 object-contain h-40"
             />
@@ -168,7 +168,7 @@ export default function Products() {
               ×
             </button>
             <img
-              src={modalProduct.image || 'https://via.placeholder.com/150'}
+              src={modalProduct.image ? `/uploads/${modalProduct.image}` : 'https://via.placeholder.com/150'}
               alt={modalProduct.name}
               className="w-full h-48 object-contain mb-4 rounded"
             />
