@@ -2,7 +2,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { sequelize } = require('../db/database');
 
-const Product = sequelize.define('Product', {
+const Product = sequelize.define('products', {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -21,7 +21,7 @@ const Product = sequelize.define('Product', {
   }
 }, {
   tableName: 'Products',
-  timestamps: true
+  timestamps: false
 });
 
 

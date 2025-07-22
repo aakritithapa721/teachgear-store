@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const { sequelize, connectDB } = require('./db/database');
 require('dotenv').config();
 
@@ -11,15 +12,20 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173' // Use env variable for flexibility
 }));
 
-const PORT = process.env.PORT || 5000; // Fallback port
+// ✅ Serve static files from the uploads folder
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+const PORT = process.env.PORT || 5555; // Fallback port
 
 app.get('/', (req, res) => {
   res.send('Backend is running');
 });
 
+// Routes
 app.use('/api/test', require('./route/testroute'));
 app.use('/api/products', require('./route/productroute'));
 
+// Start the server
 const startServer = async () => {
   try {
     await connectDB();
@@ -34,5 +40,6 @@ const startServer = async () => {
 };
 
 startServer();
+
 
 
