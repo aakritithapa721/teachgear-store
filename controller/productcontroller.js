@@ -3,6 +3,7 @@ const Product = require('../model/productmodel');
 const path = require('path');
 require('dotenv').config();
 
+
 // Add Product
 const addProduct = async (req, res) => {
   try {
