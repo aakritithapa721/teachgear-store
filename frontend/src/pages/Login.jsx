@@ -17,36 +17,42 @@ function Login() {
     }
 
     setIsLoading(true);
+
     try {
       const data = { email, password };
       const response = await LoginUserApi(data);
 
-      if (response?.data?.success) {
-        const token = response.data.token;
+      console.log('Login API response:', response);
+
+      const token = response?.token;
+
+      if (token) {
+        // Save token to localStorage
         localStorage.setItem('token', token);
-        toast.success(response.data.message);
 
-        // Decode token
-        const decode = jwtDecode(token);
+        const decoded = jwtDecode(token);
+        console.log('Decoded token:', decoded);
 
-        // Store additional user info
-        localStorage.setItem('userId', decode.id); // or decode._id
-        localStorage.setItem('userEmail', decode.email);
-        localStorage.setItem('userRole', decode.role);
+        // Store user info
+        localStorage.setItem('userId', decoded.id || decoded._id);
+        localStorage.setItem('userEmail', decoded.email);
+        localStorage.setItem('userRole', decoded.role);
 
-        // Redirect with short delay
+        toast.success(response.message || 'Login successful!');
+
         setTimeout(() => {
-          if (decode.role === 'admin') {
+          if (decoded.role === 'admin') {
             navigate('/homepage');
           } else {
             navigate('/dashboard');
           }
-        }, 1000); // 1 second delay
+        }, 1000);
       } else {
-        toast.error(response?.data?.message || 'Login failed');
+        toast.error(response?.message || 'Login failed: invalid credentials');
       }
     } catch (err) {
-      toast.error(err?.response?.data?.message || 'An error occurred during login');
+      console.error('Login error:', err);
+      toast.error(err?.message || 'Something went wrong during login');
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +65,7 @@ function Login() {
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome Back</h1>
           <p className="text-gray-600">Sign in to your account</p>
         </div>
-        
+
         <form
           className="space-y-6"
           onSubmit={(e) => {
@@ -79,8 +85,8 @@ function Login() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email address"
               className={`w-full p-4 border-2 rounded-2xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none transition-all duration-300 text-lg ${
-                email 
-                  ? 'border-blue-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100' 
+                email
+                  ? 'border-blue-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100'
                   : 'border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100'
               }`}
               aria-invalid={!email}
@@ -101,8 +107,8 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               className={`w-full p-4 border-2 rounded-2xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none transition-all duration-300 text-lg ${
-                password 
-                  ? 'border-green-400 focus:border-green-500 focus:ring-4 focus:ring-green-100' 
+                password
+                  ? 'border-green-400 focus:border-green-500 focus:ring-4 focus:ring-green-100'
                   : 'border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100'
               }`}
               aria-invalid={!password}
@@ -116,8 +122,8 @@ function Login() {
               type="submit"
               disabled={isLoading}
               className={`w-full p-4 rounded-2xl text-white font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-red-200 ${
-                isLoading 
-                  ? 'bg-red-400 cursor-not-allowed' 
+                isLoading
+                  ? 'bg-red-400 cursor-not-allowed'
                   : 'bg-red-500 hover:bg-red-600 hover:shadow-xl'
               }`}
             >
