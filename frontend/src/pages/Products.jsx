@@ -1,4 +1,3 @@
-// src/components/Products.jsx
 import React, { useState, useEffect } from 'react';
 import { fetchProducts, updateProductApi, deleteProductApi, getProductDetailsApi } from '../API/Api';
 import { useCart } from '../context/Cartcontext';
@@ -9,16 +8,14 @@ export default function Products() {
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalProduct, setModalProduct] = useState(null);
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
 
   const { itemCount, addItem } = useCart();
-
-  const [debouncedSearch, setDebouncedSearch] = useState(search);
 
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
     }, 500);
-
     return () => clearTimeout(handler);
   }, [search]);
 
@@ -29,21 +26,17 @@ export default function Products() {
   const loadProducts = async () => {
     try {
       setLoading(true);
-      console.log('Starting to fetch products with search:', debouncedSearch, 'and category:', category); // Log 1: Before fetch
       const fetchedProducts = await fetchProducts(debouncedSearch, category);
-      console.log('Fetched products:', fetchedProducts); // Log 2: After fetch, before setting state
       setProducts(fetchedProducts);
     } catch (error) {
-      console.error('Failed to fetch products:', error); // Log 3: Error case
+      console.error('Failed to fetch products:', error);
     } finally {
       setLoading(false);
-      console.log('Loading state set to false, products state:', products); // Log 4: After loading ends
     }
   };
 
   const handleDelete = async (productId) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
-      console.log('Deleting product with ID:', productId);
       try {
         await deleteProductApi(productId);
         loadProducts();
@@ -54,7 +47,6 @@ export default function Products() {
   };
 
   const handleUpdate = async (productId, updatedData) => {
-    console.log('Updating product with ID:', productId, 'Data:', updatedData);
     try {
       await updateProductApi(productId, updatedData);
       loadProducts();
@@ -113,7 +105,9 @@ export default function Products() {
           <option value="Accessories">Accessories</option>
         </select>
       </div>
+
       {loading && <p>Loading...</p>}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {products.length === 0 && !loading && <p>No products found.</p>}
         {products.map((product) => (
@@ -123,7 +117,8 @@ export default function Products() {
             onClick={() => handleViewDetails(product.id)}
           >
             <img
-              src={product.image ? `/uploads/${product.image}` : 'https://via.placeholder.com/150'}
+              src={product.image ? `http://localhost:5555/uploads/${product.image}` : '/placeholder.jpg'}
+              onError={(e) => { e.target.src = '/placeholder.jpg'; }}
               alt={product.name}
               className="mb-4 object-contain h-40"
             />
@@ -152,13 +147,14 @@ export default function Products() {
           </div>
         ))}
       </div>
+
       {modalProduct && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
           onClick={closeModal}
         >
           <div
-            className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4"
+            className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -168,7 +164,8 @@ export default function Products() {
               ×
             </button>
             <img
-              src={modalProduct.image ? `/uploads/${modalProduct.image}` : 'https://via.placeholder.com/150'}
+              src={modalProduct.image ? `http://localhost:5555/uploads/${modalProduct.image}` : '/placeholder.jpg'}
+              onError={(e) => { e.target.src = '/placeholder.jpg'; }}
               alt={modalProduct.name}
               className="w-full h-48 object-contain mb-4 rounded"
             />
