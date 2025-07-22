@@ -24,4 +24,5 @@ router.delete('/delete/:id', deleteProduct);
 router.get('/product/:id', getProduct);
 router.get('/', getAllProducts); // Changed to '/' instead of '/products'
 
+
 module.exports = router;
