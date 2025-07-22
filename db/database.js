@@ -24,4 +24,5 @@ sequelize.sync().then(() => {
     console.error("Failed to sync database:", error);
 });
 
+
 module.exports = { sequelize, connectDB };
