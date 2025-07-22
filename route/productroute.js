@@ -7,13 +7,20 @@ router.post("/add", fileUpload("image"), addProduct);
 module.exports = router; */
 const express = require('express');
 const fileUpload = require('../middleware/multer');
-const { addProduct, updateProduct, deleteProduct, getProduct, getAllProducts } = require('../controller/productcontroller'); // Import from controller
+const {
+  addProduct,
+  updateProduct,
+  deleteProduct,
+  getProduct,
+  getAllProducts,
+} = require('../controller/productcontroller');
+
 const router = express.Router();
 
-router.post("/add", fileUpload("image"), addProduct); // Add product route
-router.put("/update/:id", fileUpload("image"), updateProduct); // Update product route
-router.delete("/delete/:id", deleteProduct); // Delete product route
-router.get("/product/:id", getProduct); // Get single product
-router.get("/products", getAllProducts); // Get all products
+router.post('/add', fileUpload('image'), addProduct);
+router.put('/update/:id', fileUpload('image'), updateProduct);
+router.delete('/delete/:id', deleteProduct);
+router.get('/product/:id', getProduct);
+router.get('/products', getAllProducts); 
 
 module.exports = router;
