@@ -12,7 +12,7 @@ const Product = sequelize.define('Product', {
     allowNull: false,
   },
   price: {
-    type: DataTypes.STRING, // Matches "रू 800" format
+    type: DataTypes.STRING,
     allowNull: false,
   },
   image: {
