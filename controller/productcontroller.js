@@ -1,12 +1,13 @@
 const { Op } = require('sequelize');
 const Product = require('../model/productmodel');
+const path = require('path');
 require('dotenv').config();
 
 // Add Product
 const addProduct = async (req, res) => {
   try {
     const { name, description, price } = req.body;
-    const image = req.file ? req.file.path : null;
+    const image = req.file ? req.file.path.replace(/\\/g, '/') : null; // normalize path
 
     // Validation
     if (!name || !description || !price) {
@@ -53,7 +54,7 @@ const updateProduct = async (req, res) => {
     }
 
     const { name, description, price } = req.body;
-    const image = req.file ? req.file.path : product.image;
+    const image = req.file ? req.file.path.replace(/\\/g, '/') : product.image;
 
     const updatedProduct = await product.update({
       name: name || product.name,
@@ -161,7 +162,6 @@ const getAllProducts = async (req, res) => {
     });
   }
 };
-
 
 module.exports = {
   addProduct,

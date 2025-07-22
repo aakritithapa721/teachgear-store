@@ -1,40 +1,39 @@
 const multer = require('multer');
 const path = require('path');
 
-// Storage engine
+// Create the uploads directory if not exists
+const fs = require('fs');
+const uploadDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
+// Storage setup
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, './uploads'); // ensure this folder exists
+    cb(null, uploadDir); // Save files in /uploads
   },
   filename: (req, file, cb) => {
-    const filename = file.originalname.replace(/\s/g, '_');
-    cb(null, `${Date.now()}_${filename}`);
+    const timestamp = Date.now();
+    const sanitized = file.originalname.replace(/\s/g, '_');
+    cb(null, `${timestamp}_${sanitized}`);
   }
 });
 
-// File filter to restrict allowed types
-const fileFilter = (req, file, callback) => {
-  const allowedTypes = /\.(pdf|epub|djvu|png|jpg|jpeg)$/i;
-  if (!file.originalname.match(allowedTypes)) {
-    return callback(new Error('Invalid file format'), false);
+// File filter to allow only images
+const fileFilter = (req, file, cb) => {
+  if (!file.originalname.match(/\.(png|jpg|jpeg|gif|webp)$/i)) {
+    return cb(new Error('Invalid file format. Only image files are allowed.'));
   }
-  callback(null, true);
+  cb(null, true);
 };
 
-// Custom middleware for single file upload
+// Exported middleware
 const fileUpload = (fieldname) => (req, res, next) => {
-  multer({
-    storage,
-    fileFilter
-  }).single(fieldname)(req, res, (err) => {
+  multer({ storage, fileFilter }).array(fieldname, 10)(req, res, (err) => {
     if (err) {
-      return res.status(400).json({ error: err.message });
+      return res.status(400).json({ success: false, error: err.message });
     }
-
-    if (req.file) {
-      console.log(`Uploaded File: ${req.file.originalname} -> ${req.file.filename}`);
-    }
-
     next();
   });
 };
