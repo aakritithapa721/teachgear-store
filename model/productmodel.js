@@ -24,4 +24,5 @@ const Product = sequelize.define('Product', {
   timestamps: true
 });
 
+
 module.exports = Product;
