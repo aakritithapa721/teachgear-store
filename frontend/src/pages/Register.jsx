@@ -57,6 +57,7 @@ import React, { useState } from 'react';
 import { createUserApi } from '../API/Api';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom'; // For navigation, ensure React Router is set up
+import AuthModal from '../components/AuthModal'; // Adjust path if needed
 
 function Register() {
   const [name, setName] = useState('');
@@ -64,6 +65,7 @@ function Register() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate(); // Hook for navigation
 
+  // State for form submission
   const submit = async () => {
     if (!name || !email || !password) {
       return toast.error('Please enter all fields');
@@ -78,7 +80,6 @@ function Register() {
       const response = await createUserApi(formData);
       if (response?.data?.success) {
         toast.success(response?.data?.message);
-        // Redirect after success (e.g., to login page)
         setTimeout(() => {
           navigate('/login'); // Adjust route as needed
         }, 1000);
@@ -91,8 +92,24 @@ function Register() {
     }
   };
 
+  // State for modal
+  const [isModalOpen, setIsModalOpen] = useState(false); // Start closed, open on button click
+  const [darkMode, setDarkMode] = useState(false); // Example dark mode state
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
+
+  // Optional: Sync form data with modal if needed
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
   return (
     <div>
+      <h1>Register</h1>
+
+      {/* Form-based registration */}
       <form className="mt-10" onSubmit={(e) => { e.preventDefault(); submit(); }}>
         <input
           type="text"
@@ -111,7 +128,7 @@ function Register() {
           placeholder="email"
         />
         <input
-          type="password" // Changed to password for security
+          type="password"
           name="password"
           value={password}
           className="border border-amber-300 m-2 p-2"
@@ -125,7 +142,28 @@ function Register() {
         >
           Register
         </button>
+        <button
+          onClick={openModal}
+          className="bg-blue-400 text-white rounded-sm p-3 ml-2"
+        >
+          Register with Modal
+        </button>
       </form>
+
+      {/* Modal-based registration */}
+      {isModalOpen && (
+        <AuthModal
+          isOpen={isModalOpen}
+          onClose={handleClose}
+          darkMode={darkMode}
+          // Optional: Pass form data or submit function to sync with modal
+          initialName={name}
+          initialEmail={email}
+          initialPassword={password}
+          onSubmit={submit} // Pass the submit function if AuthModal should use it
+        />
+      )}
+
       {/* Remove live preview in production, or keep for debugging */}
       {/* <p>Live preview</p>
       <p>{name}</p>
