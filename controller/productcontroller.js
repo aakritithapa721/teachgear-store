@@ -1,16 +1,14 @@
 const { Op } = require('sequelize');
-const Product = require('../model/productmodel');
+const { Product } = require('../db/database'); // ✅ FIXED: Import Product from initialized DB
 const path = require('path');
 require('dotenv').config();
-
 
 // Add Product
 const addProduct = async (req, res) => {
   try {
     const { name, description, price } = req.body;
-    const image = req.file ? req.file.path.replace(/\\/g, '/') : null; // normalize path
+    const image = req.file ? req.file.path.replace(/\\/g, '/') : null;
 
-    // Validation
     if (!name || !description || !price) {
       return res.status(400).json({
         success: false,
@@ -18,7 +16,6 @@ const addProduct = async (req, res) => {
       });
     }
 
-    // Create product
     const newProduct = await Product.create({
       name,
       description,
@@ -143,8 +140,9 @@ const getAllProducts = async (req, res) => {
     if (search) {
       query.name = { [Op.like]: `%${search}%` };
     }
+
     if (category) {
-      query.category = category;
+      query.category = category; // Make sure your model has a 'category' field if using this
     }
 
     const products = await Product.findAll({ where: query });
@@ -171,3 +169,4 @@ module.exports = {
   getProduct,
   getAllProducts,
 };
+

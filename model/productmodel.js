@@ -1,4 +1,4 @@
-/// src/model/productmodel.js
+// src/model/productmodel.js
 module.exports = (Sequelize, sequelize) => {
     const Product = sequelize.define('Product', {
         name: {
@@ -26,6 +26,5 @@ module.exports = (Sequelize, sequelize) => {
         timestamps: true,
     });
 
-    
-    return Product;
+    return Product; 
 };
