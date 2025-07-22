@@ -1,10 +1,3 @@
-/*const express = require("express");
-const fileUpload = require("../middleware/multer");
-const router = express.Router();
-
-router.post("/add", fileUpload("image"), addProduct);
-
-module.exports = router; */
 const express = require('express');
 const fileUpload = require('../middleware/multer');
 const {
@@ -21,8 +14,12 @@ const router = express.Router();
 router.post('/add', fileUpload('image'), addProduct);
 router.put('/update/:id', fileUpload('image'), updateProduct);
 router.delete('/delete/:id', deleteProduct);
-router.get('/product/:id', getProduct);
-router.get('/', getAllProducts); // Changed to '/' instead of '/products'
 
+// ✅ Changed from '/product/:id' to '/:id'
+router.get('/:id', getProduct);
+
+// ✅ Get all products
+router.get('/', getAllProducts);
 
 module.exports = router;
+
