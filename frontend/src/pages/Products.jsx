@@ -60,25 +60,39 @@ export default AddProduct;
 
 */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { fetchProducts, updateProductApi, deleteProductApi, getProductDetailsApi } from '../API/Api';
+import { useCart } from '../context/Cartcontext'; // assuming this is your Cart context
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(false);
-  const [modalProduct, setModalProduct] = useState(null); // State for Modal
-  const { itemCount, addItem } = useCart(); // Using Cart Context - correct destructuring
+  const [modalProduct, setModalProduct] = useState(null);
+
+  const { itemCount, addItem } = useCart();
+
+  // Debounce search input (wait 500ms after typing stops)
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
 
   useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  // Load products whenever debouncedSearch or category changes
+  useEffect(() => {
     loadProducts();
-  }, [search, category]);
+  }, [debouncedSearch, category]);
 
   const loadProducts = async () => {
     try {
       setLoading(true);
-      const fetchedProducts = await fetchProducts(search, category);
+      const fetchedProducts = await fetchProducts(debouncedSearch, category);
       setProducts(fetchedProducts);
     } catch (error) {
       console.error('Failed to fetch products:', error);
@@ -108,14 +122,14 @@ export default function Products() {
   const handleViewDetails = async (productId) => {
     try {
       const productDetails = await getProductDetailsApi(productId);
-      setModalProduct(productDetails); // Open Modal
+      setModalProduct(productDetails);
     } catch (error) {
       console.error('Failed to fetch product details:', error);
     }
   };
 
   const closeModal = () => {
-    setModalProduct(null); // Close Modal
+    setModalProduct(null);
   };
 
   const handleAddToCart = (product) => {
@@ -123,15 +137,14 @@ export default function Products() {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.image
+      image: product.image,
     });
   };
 
   return (
     <div className="p-8">
       <h2 className="text-2xl font-bold mb-4">Products</h2>
-      
-      {/* Display cart count */}
+
       <div className="mb-4">
         <p className="text-sm text-gray-600">Items in cart: {itemCount}</p>
       </div>
@@ -169,19 +182,18 @@ export default function Products() {
               src={product.image || 'https://via.placeholder.com/150'}
               alt={product.name}
               className="mb-4 object-contain h-40 cursor-pointer"
-              onClick={() => handleViewDetails(product.id)} // Open modal on click
+              onClick={() => handleViewDetails(product.id)}
             />
             <h3 className="font-semibold">{product.name}</h3>
             <p className="text-gray-700">${product.price}</p>
 
             <button
-              onClick={() => handleAddToCart(product)} // Pass the actual product
+              onClick={() => handleAddToCart(product)}
               className="mt-4 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700"
             >
               Add to Cart
             </button>
 
-            {/* Update and Delete buttons */}
             <button
               onClick={() => handleUpdate(product.id, { name: 'Updated Product Name' })}
               className="mt-4 bg-yellow-600 text-white px-3 py-2 rounded hover:bg-yellow-700"
@@ -198,10 +210,16 @@ export default function Products() {
         ))}
       </div>
 
-      {/* Product Details Modal */}
+      {/* Modal */}
       {modalProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={closeModal} // Close modal on clicking outside content
+        >
+          <div
+            className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md"
+            onClick={(e) => e.stopPropagation()} // Prevent close when clicking inside modal
+          >
             <h3 className="text-xl font-semibold">{modalProduct.name}</h3>
             <p>{modalProduct.description}</p>
             <p className="mt-2">${modalProduct.price}</p>
