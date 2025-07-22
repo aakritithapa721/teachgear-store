@@ -12,15 +12,16 @@ const {
   updateProduct,
   deleteProduct,
   getProduct,
-  getAllProducts,
+  getAllProducts
 } = require('../controller/productcontroller');
 
 const router = express.Router();
 
+// Use 'image' as fieldname (must match frontend)
 router.post('/add', fileUpload('image'), addProduct);
 router.put('/update/:id', fileUpload('image'), updateProduct);
 router.delete('/delete/:id', deleteProduct);
 router.get('/product/:id', getProduct);
-router.get('/products', getAllProducts); 
+router.get('/', getAllProducts); // Changed to '/' instead of '/products'
 
 module.exports = router;
