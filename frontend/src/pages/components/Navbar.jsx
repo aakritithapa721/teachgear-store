@@ -1,32 +1,3 @@
-/*import React from 'react'
-import { Link } from 'react-router-dom'
-import { useCart } from '../../context/Cartcontext'
-
-const NavBar = () => {
-  const { itemCount } = useCart()
-
-  return (
-    <div className='flex'>
-      <Link className='bg-pink-200 pr-4 pl-4 p-2 m-20 text-black' to={'/'}>Home</Link>
-      <Link className='bg-pink-200 pr-4 pl-4 p-2 m-20 text-black' to={'/ContactUs'}>Contact Us</Link>
-      <Link className='bg-pink-200 pr-4 pl-4 p-2 m-20 text-black' to={'/about'}>About Us</Link>
-      <Link className='bg-pink-200 pr-4 pl-4 p-2 m-20 text-black' to={'/Register'}>Register</Link>
-      <Link className='bg-pink-200 pr-4 pl-4 p-2 m-20 text-black' to={'/Login'}>Login</Link>
-      <Link className='bg-pink-200 pr-4 pl-4 p-2 m-20 text-black' to={'/Products'}>Products</Link>
-      <Link className='bg-pink-200 pr-4 pl-4 p-2 m-20 text-black relative' to={'/cart'}>
-        Cart
-        {itemCount > 0 && (
-          <span className='absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs'>
-            {itemCount}
-          </span>
-        )}
-      </Link>
-    </div>
-  )
-}
-
-export default NavBar
-*/
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ShoppingCart, User, Menu, Sun, Moon, X } from 'lucide-react';
@@ -53,8 +24,7 @@ const Navbar = () => {
   };
 
   return (
-    <div
-      className={`${
+    <div className={`${
         darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'
       } shadow-md sticky top-0 z-50 transition-colors duration-300`}
     >
@@ -76,6 +46,9 @@ const Navbar = () => {
             </Link>
             <Link to="/Products" className="hover:text-red-500 transition-colors font-medium">
               Products
+            </Link>
+            <Link to="/add-product" className="hover:text-red-500 transition-colors font-medium">
+              Add Product
             </Link>
             <Link to="/about" className="hover:text-red-500 transition-colors font-medium">
               About Us
@@ -142,11 +115,7 @@ const Navbar = () => {
       </header>
 
       {/* Search Bar - Mobile/Tablet */}
-      <div
-        className={`md:hidden px-4 pb-4 ${
-          darkMode ? 'bg-gray-900' : 'bg-white'
-        }`}
-      >
+      <div className={`md:hidden px-4 pb-4 ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
         <form onSubmit={handleSearch} className="relative">
           <input
             type="text"
@@ -167,11 +136,7 @@ const Navbar = () => {
       </div>
 
       {/* Desktop Search Bar */}
-      <div
-        className={`hidden md:block px-4 pb-4 ${
-          darkMode ? 'bg-gray-900' : 'bg-white'
-        }`}
-      >
+      <div className={`hidden md:block px-4 pb-4 ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
         <div className="container mx-auto">
           <div className="max-w-2xl mx-auto">
             <form onSubmit={handleSearch} className="relative">
@@ -197,11 +162,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div
-          className={`lg:hidden ${
-            darkMode ? 'bg-gray-800' : 'bg-gray-50'
-          } border-t`}
-        >
+        <div className={`lg:hidden ${darkMode ? 'bg-gray-800' : 'bg-gray-50'} border-t`}>
           <div className="px-4 py-4 space-y-4">
             <Link
               to="/"
@@ -218,6 +179,13 @@ const Navbar = () => {
               Products
             </Link>
             <Link
+              to="/add-product"
+              className="block py-2 hover:text-red-500 transition-colors font-medium"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Add Product
+            </Link>
+            <Link
               to="/about"
               className="block py-2 hover:text-red-500 transition-colors font-medium"
               onClick={() => setMobileMenuOpen(false)}
@@ -231,9 +199,7 @@ const Navbar = () => {
             >
               Contact Us
             </Link>
-            <hr
-              className={`${darkMode ? 'border-gray-700' : 'border-gray-300'}`}
-            />
+            <hr className={`${darkMode ? 'border-gray-700' : 'border-gray-300'}`} />
             <Link
               to="/Login"
               className="block py-2 hover:text-red-500 transition-colors font-medium"
