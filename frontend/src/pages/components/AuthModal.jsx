@@ -33,15 +33,15 @@ const AuthModal = ({ isOpen, onClose, darkMode, initialName, initialEmail, initi
       // Fallback logic (if needed)
       console.log('Submit with formData:', formData);
     }
-    onClose(); // Close modal after submission
+    onClose(); // Close model after submission
   };
 
   if (!isOpen) return null;
 
   return (
-    // ... rest of your AuthModal JSX, using formData and handleInputChange
+    // ... rest of your AuthModel JSX, using formData and handleInputChange
     <div>
-      {/* Existing modal structure */}
+      {/* Existing model structure */}
       <button onClick={handleSubmit}>
         {activeTab === 'register' ? 'Create Account' : 'Sign In'}
       </button>

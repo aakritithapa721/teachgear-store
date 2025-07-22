@@ -63,10 +63,10 @@ export default Login
 */
 
 import React, { useState } from 'react';
-import { toast } from 'react-toastify'; // Ensure react-toastify is installed
+import { toast } from 'react-hot-toast'; // Ensure react-toastify is installed
 import jwtDecode from 'jwt-decode'; // Ensure jwt-decode is installed
 import { useNavigate } from 'react-router-dom'; // For navigation, ensure React Router is set up
-import loginUserApi from './services/api'; // Adjust the import path to your API service file
+import { LoginUserApi } from '../API/Api'; // Adjust the import path to your API service file
 
 function Login() {
   const [email, setEmail] = useState('');

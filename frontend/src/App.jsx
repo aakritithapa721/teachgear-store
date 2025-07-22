@@ -71,7 +71,7 @@ import { CartProvider } from './context/Cartcontext';
 import Homepage from './pages/Homepage';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
-import Navbar from './components/Navbar'; // Confirmed path
+import Navbar from './pages/components/Navbar';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Products from './pages/Products';
