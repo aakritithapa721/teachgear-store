@@ -12,7 +12,7 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173' // Use env variable for flexibility
 }));
 
-// ✅ Serve static files from the uploads folder
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const PORT = process.env.PORT || 5555; // Fallback port
