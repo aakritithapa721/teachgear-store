@@ -60,16 +60,18 @@ Increase
 
 export default Homepage*/ 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Homepage = () => {
   const [count, setCount] = useState(0);
 
-  // Check and handle count below -5
-  if (count < -5) {
-    alert('Error: Count cannot go below -5');
-    setCount(0); // Reset immediately
-  }
+  // Handle count below -5 with useEffect
+  useEffect(() => {
+    if (count < -5) {
+      alert('Error: Count cannot go below -5');
+      setCount(0);
+    }
+  }, [count]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -79,7 +81,7 @@ const Homepage = () => {
       </p>
       <div className="flex gap-4">
         <button
-          onClick={() => setCount((prevCount) => prevCount - 1)} // Use callback for safety
+          onClick={() => setCount((prevCount) => prevCount - 1)}
           className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
         >
           Decrease
@@ -91,7 +93,7 @@ const Homepage = () => {
           Reset
         </button>
         <button
-          onClick={() => setCount((prevCount) => prevCount + 1)} // Use callback for safety
+          onClick={() => setCount((prevCount) => prevCount + 1)}
           className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
         >
           Increase
