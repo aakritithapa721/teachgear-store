@@ -34,4 +34,5 @@ sequelize.sync({ alter: true })
     console.error("Failed to sync database:", error);
   });
 
+  
 module.exports = { sequelize, connectDB, Product };
