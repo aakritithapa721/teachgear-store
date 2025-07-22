@@ -1,6 +1,7 @@
+// src/components/Products.jsx
 import React, { useState, useEffect } from 'react';
 import { fetchProducts, updateProductApi, deleteProductApi, getProductDetailsApi } from '../API/Api';
-import { useCart } from '../context/Cartcontext'; // assuming this is your Cart context
+import { useCart } from '../context/Cartcontext';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -11,7 +12,6 @@ export default function Products() {
 
   const { itemCount, addItem } = useCart();
 
-  // Debounce search input (wait 500ms after typing stops)
   const [debouncedSearch, setDebouncedSearch] = useState(search);
 
   useEffect(() => {
@@ -22,7 +22,6 @@ export default function Products() {
     return () => clearTimeout(handler);
   }, [search]);
 
-  // Load products whenever debouncedSearch or category changes
   useEffect(() => {
     loadProducts();
   }, [debouncedSearch, category]);
@@ -30,25 +29,32 @@ export default function Products() {
   const loadProducts = async () => {
     try {
       setLoading(true);
+      console.log('Starting to fetch products with search:', debouncedSearch, 'and category:', category); // Log 1: Before fetch
       const fetchedProducts = await fetchProducts(debouncedSearch, category);
+      console.log('Fetched products:', fetchedProducts); // Log 2: After fetch, before setting state
       setProducts(fetchedProducts);
     } catch (error) {
-      console.error('Failed to fetch products:', error);
+      console.error('Failed to fetch products:', error); // Log 3: Error case
     } finally {
       setLoading(false);
+      console.log('Loading state set to false, products state:', products); // Log 4: After loading ends
     }
   };
 
   const handleDelete = async (productId) => {
-    try {
-      await deleteProductApi(productId);
-      loadProducts();
-    } catch (error) {
-      console.error('Failed to delete product:', error);
+    if (window.confirm('Are you sure you want to delete this product?')) {
+      console.log('Deleting product with ID:', productId);
+      try {
+        await deleteProductApi(productId);
+        loadProducts();
+      } catch (error) {
+        console.error('Failed to delete product:', error);
+      }
     }
   };
 
   const handleUpdate = async (productId, updatedData) => {
+    console.log('Updating product with ID:', productId, 'Data:', updatedData);
     try {
       await updateProductApi(productId, updatedData);
       loadProducts();
@@ -60,6 +66,9 @@ export default function Products() {
   const handleViewDetails = async (productId) => {
     try {
       const productDetails = await getProductDetailsApi(productId);
+      if (!productDetails.specs) {
+        productDetails.specs = 'Size: Standard\nWeight: 0.5kg\nColor: Black';
+      }
       setModalProduct(productDetails);
     } catch (error) {
       console.error('Failed to fetch product details:', error);
@@ -82,11 +91,9 @@ export default function Products() {
   return (
     <div className="p-8">
       <h2 className="text-2xl font-bold mb-4">Products</h2>
-
       <div className="mb-4">
         <p className="text-sm text-gray-600">Items in cart: {itemCount}</p>
       </div>
-
       <div className="mb-4 flex flex-wrap gap-4">
         <input
           type="text"
@@ -106,42 +113,38 @@ export default function Products() {
           <option value="Accessories">Accessories</option>
         </select>
       </div>
-
       {loading && <p>Loading...</p>}
-
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {products.length === 0 && !loading && <p>No products found.</p>}
         {products.map((product) => (
           <div
             key={product.id}
-            className="border rounded p-4 flex flex-col justify-between"
+            className="border rounded p-4 flex flex-col justify-between hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => handleViewDetails(product.id)}
           >
             <img
               src={product.image || 'https://via.placeholder.com/150'}
               alt={product.name}
-              className="mb-4 object-contain h-40 cursor-pointer"
-              onClick={() => handleViewDetails(product.id)}
+              className="mb-4 object-contain h-40"
             />
             <h3 className="font-semibold">{product.name}</h3>
             <p className="text-gray-700">
               {new Intl.NumberFormat('en-NP', { style: 'currency', currency: 'NPR' }).format(product.price)}
             </p>
-
             <button
-              onClick={() => handleAddToCart(product)}
+              onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
               className="mt-4 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700"
             >
               Add to Cart
             </button>
-
             <button
-              onClick={() => handleUpdate(product.id, { name: 'Updated Product Name' })}
-              className="mt-4 bg-yellow-600 text-white px-3 py-2 rounded hover:bg-yellow-700"
+              onClick={(e) => { e.stopPropagation(); handleUpdate(product.id, { name: 'Updated Product Name' }); }}
+              className="mt-2 bg-yellow-600 text-white px-3 py-2 rounded hover:bg-yellow-700"
             >
               Update
             </button>
             <button
-              onClick={() => handleDelete(product.id)}
+              onClick={(e) => { e.stopPropagation(); handleDelete(product.id); }}
               className="mt-2 bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700"
             >
               Delete
@@ -149,31 +152,48 @@ export default function Products() {
           </div>
         ))}
       </div>
-
-      {/* Modal */}
       {modalProduct && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          onClick={closeModal} // Close modal on clicking outside content
+          onClick={closeModal}
         >
           <div
-            className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md"
-            onClick={(e) => e.stopPropagation()} // Prevent close when clicking inside modal
+            className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4"
+            onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-xl font-semibold">{modalProduct.name}</h3>
-            <p>{modalProduct.description}</p>
-            <p className="mt-2">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
+              onClick={closeModal}
+            >
+              ×
+            </button>
+            <img
+              src={modalProduct.image || 'https://via.placeholder.com/150'}
+              alt={modalProduct.name}
+              className="w-full h-48 object-contain mb-4 rounded"
+            />
+            <h3 className="text-xl font-semibold mb-2">{modalProduct.name}</h3>
+            <p className="text-gray-600 mb-2">{modalProduct.description}</p>
+            <p className="text-gray-800 font-medium mb-2">
               {new Intl.NumberFormat('en-NP', { style: 'currency', currency: 'NPR' }).format(modalProduct.price)}
             </p>
+            <div className="specs mb-4">
+              <h4 className="font-semibold text-gray-700">Specifications</h4>
+              <p className="text-sm text-gray-600">
+                {modalProduct.specs.split('\n').map((spec, index) => (
+                  <div key={index}>{spec}</div>
+                ))}
+              </p>
+            </div>
             <button
-              onClick={() => handleAddToCart(modalProduct)}
-              className="mt-4 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 mr-2"
+              onClick={(e) => { e.stopPropagation(); handleAddToCart(modalProduct); }}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
             >
               Add to Cart
             </button>
             <button
               onClick={closeModal}
-              className="mt-4 bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700"
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
             >
               Close
             </button>
