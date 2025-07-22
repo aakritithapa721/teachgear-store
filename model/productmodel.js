@@ -26,5 +26,6 @@ module.exports = (Sequelize, sequelize) => {
         timestamps: true,
     });
 
+    
     return Product; 
 };
