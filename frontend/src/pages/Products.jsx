@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { fetchProducts, updateProductApi, deleteProductApi, getProductDetailsApi } from '../API/Api';
 import { useCart } from '../context/Cartcontext';
 
+
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState('');
