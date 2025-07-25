@@ -20,11 +20,12 @@ function Login() {
 
     try {
       const data = { email, password };
+      console.log('Sending login request with data:', data); // Debug: Log request payload
       const response = await LoginUserApi(data);
+      console.log('Login API response:', response.data, 'Status:', response.status); // Debug: Log response
 
-      console.log('Login API response:', response);
-
-      const token = response?.token;
+      // Check for token in various response structures
+      const token = response?.data?.token || response?.token;
 
       if (token) {
         // Save token to localStorage
@@ -38,7 +39,7 @@ function Login() {
         localStorage.setItem('userEmail', decoded.email);
         localStorage.setItem('userRole', decoded.role);
 
-        toast.success(response.message || 'Login successful!');
+        toast.success(response?.data?.message || response?.message || 'Login successful!');
 
         setTimeout(() => {
           if (decoded.role === 'admin') {
@@ -48,11 +49,11 @@ function Login() {
           }
         }, 1000);
       } else {
-        toast.error(response?.message || 'Login failed: invalid credentials');
+        toast.error(response?.data?.message || response?.message || 'Login failed: invalid credentials');
       }
     } catch (err) {
-      console.error('Login error:', err);
-      toast.error(err?.message || 'Something went wrong during login');
+      console.error('Login error:', err.response, err.message); // Debug: Log error details
+      toast.error(err?.response?.data?.message || err?.message || 'Something went wrong during login');
     } finally {
       setIsLoading(false);
     }
@@ -66,13 +67,7 @@ function Login() {
           <p className="text-gray-600">Sign in to your account</p>
         </div>
 
-        <form
-          className="space-y-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            submit();
-          }}
-        >
+        <div className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-3">
               Email Address
@@ -119,7 +114,8 @@ function Login() {
 
           <div className="pt-4">
             <button
-              type="submit"
+              type="button"
+              onClick={submit}
               disabled={isLoading}
               className={`w-full p-4 rounded-2xl text-white font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-red-200 ${
                 isLoading
@@ -130,7 +126,7 @@ function Login() {
               {isLoading ? 'Signing In...' : 'Sign In'}
             </button>
           </div>
-        </form>
+        </div>
 
         <div className="mt-8 pt-6 border-t border-gray-200">
           <p className="text-center text-gray-600">

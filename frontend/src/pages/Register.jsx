@@ -26,25 +26,28 @@ function Register() {
     setIsLoading(true);
     try {
       const data = { username: name, email, password };
+      console.log('Sending request with data:', data); // Debug: Log request payload
       const response = await createUserApi(data);
+      console.log('API Response:', response.data, 'Status:', response.status); // Debug: Log full response
 
-      console.log('API Response:', response);
-
+      // Updated success condition to handle common API response structures
       const success =
-        response?.success === true ||
-        response?.message?.toLowerCase().includes('success') ||
-        response?.user;
+        response?.data?.success === true ||
+        response?.data?.message?.toLowerCase().includes('success') ||
+        response?.data?.user ||
+        response?.data?.status === 'success' ||
+        response?.data?.id;
 
       if (success) {
-        toast.success(response.message || 'Registration successful!');
+        toast.success(response?.data?.message || 'Registration successful!');
         setTimeout(() => {
           navigate('/login');
         }, 1000);
       } else {
-        toast.error(response.message || 'Registration failed. Please try again.');
+        toast.error(response?.data?.message || 'Registration failed. Please try again.');
       }
     } catch (err) {
-      console.error('Error creating user:', err);
+      console.error('Error creating user:', err.response, err.message); // Debug: Log error details
       toast.error(err?.response?.data?.message || 'Registration failed. Please try again later.');
     } finally {
       setIsLoading(false);
@@ -59,13 +62,7 @@ function Register() {
           <p className="text-gray-600">Join us today and get started</p>
         </div>
 
-        <form
-          className="space-y-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            submit();
-          }}
-        >
+        <div className="space-y-6">
           <div>
             <label htmlFor="name" className="block text-sm font-semibold text-gray-900 mb-3">
               Full Name
@@ -135,7 +132,8 @@ function Register() {
 
           <div className="flex flex-col space-y-4 pt-4">
             <button
-              type="submit"
+              type="button"
+              onClick={submit}
               disabled={isLoading}
               className={`w-full p-4 rounded-2xl text-white font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-red-200 ${
                 isLoading
@@ -172,7 +170,7 @@ function Register() {
               )}
             </button>
           </div>
-        </form>
+        </div>
 
         <div className="mt-8 pt-6 border-t border-gray-200">
           <p className="text-center text-gray-600">

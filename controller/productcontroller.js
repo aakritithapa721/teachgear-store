@@ -1,3 +1,4 @@
+
 const { Op } = require('sequelize');
 const { Product } = require('../db/database'); // ✅ FIXED: Import Product from initialized DB
 const path = require('path');
@@ -7,7 +8,8 @@ require('dotenv').config();
 const addProduct = async (req, res) => {
   try {
     const { name, description, price } = req.body;
-    const image = req.file ? req.file.path.replace(/\\/g, '/') : null;
+    console.log('Received body:', req.body); // Debug: Log received data
+    console.log('Received file:', req.file); // Debug: Log received file
 
     if (!name || !description || !price) {
       return res.status(400).json({
@@ -15,6 +17,16 @@ const addProduct = async (req, res) => {
         message: 'Please fill all required fields',
       });
     }
+
+    // Require an image file
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please upload an image for the product',
+      });
+    }
+
+    const image = req.file.path.replace(/\\/g, '/');
 
     const newProduct = await Product.create({
       name,
@@ -52,6 +64,10 @@ const updateProduct = async (req, res) => {
     }
 
     const { name, description, price } = req.body;
+    console.log('Received body:', req.body); // Debug: Log received data
+    console.log('Received file:', req.file); // Debug: Log received file
+
+    // Determine image value with existing if no new file
     const image = req.file ? req.file.path.replace(/\\/g, '/') : product.image;
 
     const updatedProduct = await product.update({
@@ -169,4 +185,3 @@ module.exports = {
   getProduct,
   getAllProducts,
 };
-

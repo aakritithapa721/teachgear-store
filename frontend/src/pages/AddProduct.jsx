@@ -6,7 +6,7 @@ const AddProduct = () => {
     name: '',
     description: '',
     price: '',
-    image: null
+    image: ''
   });
 
   const handleChange = (e) => {
@@ -38,7 +38,7 @@ const AddProduct = () => {
           name: '',
           description: '',
           price: '',
-          image: null
+          image: ''
         });
       } else {
         alert('Failed to add product');

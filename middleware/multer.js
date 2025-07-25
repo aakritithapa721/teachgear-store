@@ -1,3 +1,4 @@
+
 const multer = require('multer');
 const path = require('path');
 
@@ -30,7 +31,7 @@ const fileFilter = (req, file, cb) => {
 
 // Exported middleware
 const fileUpload = (fieldname) => (req, res, next) => {
-  multer({ storage, fileFilter }).array(fieldname, 10)(req, res, (err) => {
+  multer({ storage, fileFilter }).single(fieldname)(req, res, (err) => {
     if (err) {
       return res.status(400).json({ success: false, error: err.message });
     }

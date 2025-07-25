@@ -78,6 +78,8 @@ import Products from './pages/Products';
 import { Toaster } from 'react-hot-toast';
 import UserDashboard from './pages/User_dashboard'; 
 import AddProduct from './pages/AddProduct';
+import Uploads from './pages/uploads';
+
 
 const App = () => {
   return (
@@ -94,6 +96,8 @@ const App = () => {
           <Route path="/products" element={<Products />} />
           <Route path="/dashboard" element={<UserDashboard />} />
           <Route path="/add-product" element={<AddProduct />} />
+           <Route path="/uploads" element={<Uploads />} />
+         
         </Routes>
       </Router>
     </CartProvider>

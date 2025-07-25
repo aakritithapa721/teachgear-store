@@ -12,6 +12,9 @@ export default function Products() {
 
   const { itemCount, addItem } = useCart();
 
+  // Add API base URL from environment
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5555';
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
@@ -117,8 +120,8 @@ export default function Products() {
             onClick={() => handleViewDetails(product.id)}
           >
             <img
-              src={product.image ? `http://localhost:5555/uploads/${product.image}` : '/placeholder.jpg'}
-              onError={(e) => { e.target.src = '/placeholder.jpg'; }}
+              src={product.image ? `${API_BASE_URL}/uploads/${product.image}` : `${API_BASE_URL}/uploads/placeholder.jpg`}
+              onError={(e) => { e.target.src = `${API_BASE_URL}/uploads/placeholder.jpg`; }}
               alt={product.name}
               className="mb-4 object-contain h-40"
             />
@@ -164,8 +167,8 @@ export default function Products() {
               ×
             </button>
             <img
-              src={modalProduct.image ? `http://localhost:5555/uploads/${modalProduct.image}` : '/placeholder.jpg'}
-              onError={(e) => { e.target.src = '/placeholder.jpg'; }}
+              src={modalProduct.image ? `${API_BASE_URL}/uploads/${modalProduct.image}` : `${API_BASE_URL}/uploads/placeholder.jpg`}
+              onError={(e) => { e.target.src = `${API_BASE_URL}/uploads/placeholder.jpg`; }}
               alt={modalProduct.name}
               className="w-full h-48 object-contain mb-4 rounded"
             />
