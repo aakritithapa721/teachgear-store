@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchProducts, updateProductApi, deleteProductApi, getProductDetailsApi } from '../API/Api';
-import { useCart } from '../context/Cartcontext';
+import { useCart } from '../context/CartContext';
 
 
 export default function Products() {

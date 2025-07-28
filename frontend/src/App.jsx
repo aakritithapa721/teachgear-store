@@ -67,7 +67,7 @@ export default App
 */
 import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import { CartProvider } from './context/Cartcontext';
+import { CartProvider } from './context/CartContext';
 import Homepage from './pages/Homepage';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';

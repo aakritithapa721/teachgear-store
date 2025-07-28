@@ -1,6 +1,5 @@
-
 const { Op } = require('sequelize');
-const { Product } = require('../db/database'); // ✅ FIXED: Import Product from initialized DB
+const { Product } = require('../db/database'); 
 const path = require('path');
 require('dotenv').config();
 
@@ -26,7 +25,8 @@ const addProduct = async (req, res) => {
       });
     }
 
-    const image = req.file.path.replace(/\\/g, '/');
+    
+    const image = req.file.filename;
 
     const newProduct = await Product.create({
       name,
@@ -67,8 +67,8 @@ const updateProduct = async (req, res) => {
     console.log('Received body:', req.body); // Debug: Log received data
     console.log('Received file:', req.file); // Debug: Log received file
 
-    // Determine image value with existing if no new file
-    const image = req.file ? req.file.path.replace(/\\/g, '/') : product.image;
+  
+    const image = req.file ? req.file.filename : product.image;
 
     const updatedProduct = await product.update({
       name: name || product.name,
@@ -158,7 +158,7 @@ const getAllProducts = async (req, res) => {
     }
 
     if (category) {
-      query.category = category; // Make sure your model has a 'category' field if using this
+      query.category = category; 
     }
 
     const products = await Product.findAll({ where: query });
@@ -177,7 +177,6 @@ const getAllProducts = async (req, res) => {
     });
   }
 };
-
 
 module.exports = {
   addProduct,
