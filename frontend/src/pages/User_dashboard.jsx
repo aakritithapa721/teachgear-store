@@ -33,6 +33,7 @@ const UserDashboard = () => {
         Welcome, {user?.username || 'User'}!
       </h1>
 
+
       <div className="bg-white dark:bg-gray-800 shadow rounded p-6 mb-6">
         <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">🛒 Your Cart</h2>
         <p className="text-gray-700 dark:text-gray-300">Items in Cart: {itemCount}</p>
