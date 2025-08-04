@@ -205,3 +205,4 @@ function Register({ darkMode }) {
 }
 
 export default Register;
+
