@@ -61,3 +61,4 @@ const EditProductModal = ({ product, onClose, onSave }) => {
 };
 
 export default EditProductModal;
+
