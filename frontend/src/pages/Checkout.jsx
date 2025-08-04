@@ -45,3 +45,4 @@ const KhaltiCheckout = ({ amount }) => {
 };
 
 export default KhaltiCheckout;
+
