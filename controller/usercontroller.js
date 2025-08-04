@@ -128,6 +128,7 @@ const getUsers = async (req, res) => {
   }
 };
 
+
 const deleteUsers = async (req, res) => {
   const userId = req.params.id;
   try {
