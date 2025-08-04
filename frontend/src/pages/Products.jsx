@@ -42,6 +42,7 @@ export default function Products() {
   useEffect(() => {
     loadProducts();
   }, [debouncedSearch, category]);
+  
 
   const loadProducts = async () => {
     try {
