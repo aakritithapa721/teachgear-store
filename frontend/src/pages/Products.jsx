@@ -43,7 +43,6 @@ export default function Products() {
     loadProducts();
   }, [debouncedSearch, category]);
   
-
   const loadProducts = async () => {
     try {
       setLoading(true);
