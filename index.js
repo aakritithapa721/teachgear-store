@@ -30,6 +30,7 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/api/test', require('./route/testroute'));
 app.use('/api/products', require('./route/productroute'));
+app.use('/api/auth', require('./route/authRoute')); // Ensure this line is present
 
 // Start the server
 const startServer = async () => {
@@ -44,6 +45,5 @@ const startServer = async () => {
     process.exit(1);
   }
 };
-
 
 startServer();

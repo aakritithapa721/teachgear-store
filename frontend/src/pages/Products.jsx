@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchProducts, updateProductApi, deleteProductApi, getProductDetailsApi } from '../API/Api';
 import { useCart } from '../context/CartContext';
-
+import EditProductModal from './components/EditProductModal';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -9,12 +9,28 @@ export default function Products() {
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalProduct, setModalProduct] = useState(null);
+  const [editProduct, setEditProduct] = useState(null);
   const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const [userRole, setUserRole] = useState(null);
 
   const { itemCount, addItem } = useCart();
 
-  // Add API base URL from environment
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5555';
+
+  // Check user role on component mount
+  useEffect(() => {
+    // Replace this with your actual auth check
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    setUserRole(user.role || 'customer'); // default to 'customer'
+    
+    // Alternative methods if you use different storage:
+    // const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    // setUserRole(userData.userType || 'customer');
+    
+    // Or if you have a user context:
+    // const { user } = useAuth();
+    // setUserRole(user?.role || 'customer');
+  }, []);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -50,15 +66,6 @@ export default function Products() {
     }
   };
 
-  const handleUpdate = async (productId, updatedData) => {
-    try {
-      await updateProductApi(productId, updatedData);
-      loadProducts();
-    } catch (error) {
-      console.error('Failed to update product:', error);
-    }
-  };
-
   const handleViewDetails = async (productId) => {
     try {
       const productDetails = await getProductDetailsApi(productId);
@@ -84,12 +91,39 @@ export default function Products() {
     });
   };
 
+  // Edit modal handlers
+  const openEditModal = (product) => {
+    setEditProduct(product);
+  };
+
+  const closeEditModal = () => {
+    setEditProduct(null);
+  };
+
+  const handleSaveUpdate = async (updatedData) => {
+    try {
+      await updateProductApi(editProduct.id, updatedData);
+      closeEditModal();
+      loadProducts();
+    } catch (error) {
+      console.error('Failed to update product:', error);
+    }
+  };
+
+  // Check if user is admin
+  const isAdmin = userRole === 'admin';
+
   return (
     <div className="p-8">
       <h2 className="text-2xl font-bold mb-4">Products</h2>
-      <div className="mb-4">
-        <p className="text-sm text-gray-600">Items in cart: {itemCount}</p>
-      </div>
+      
+      {/* Show cart info only for customers */}
+      {!isAdmin && (
+        <div className="mb-4">
+          <p className="text-sm text-gray-600">Items in cart: {itemCount}</p>
+        </div>
+      )}
+
       <div className="mb-4 flex flex-wrap gap-4">
         <input
           type="text"
@@ -130,28 +164,38 @@ export default function Products() {
             <p className="text-gray-700">
               {new Intl.NumberFormat('en-NP', { style: 'currency', currency: 'NPR' }).format(product.price)}
             </p>
-            <button
-              onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
-              className="mt-4 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700"
-            >
-              Add to Cart
-            </button>
-            <button
-              onClick={(e) => { e.stopPropagation(); handleUpdate(product.id, { name: 'Updated Product Name' }); }}
-              className="mt-2 bg-yellow-600 text-white px-3 py-2 rounded hover:bg-yellow-700"
-            >
-              Update
-            </button>
-            <button
-              onClick={(e) => { e.stopPropagation(); handleDelete(product.id); }}
-              className="mt-2 bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700"
-            >
-              Delete
-            </button>
+            
+            {/* Conditional rendering based on user role */}
+            {isAdmin ? (
+              // Admin buttons
+              <div className="flex flex-col gap-2 mt-4">
+                <button
+                  onClick={(e) => { e.stopPropagation(); openEditModal(product); }}
+                  className="bg-yellow-600 text-white px-3 py-2 rounded hover:bg-yellow-700"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleDelete(product.id); }}
+                  className="bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            ) : (
+              // Customer button
+              <button
+                onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
+                className="mt-4 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700"
+              >
+                Add to Cart
+              </button>
+            )}
           </div>
         ))}
       </div>
 
+      {/* Product details modal */}
       {modalProduct && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
@@ -168,7 +212,7 @@ export default function Products() {
               ×
             </button>
             <img
-              src={modalProduct.image ? `${API_BASE_URL}/uploads/${modalProduct.image}` : `${API_BASE_URL}/uploads/placeholder.jpg`}
+              src={modalProduct.image ? `${API_BASE_URL}/uploads/${modalProduct.image}` : `${API_BASE_URL}/uploads/placeholder.jpg` }
               onError={(e) => { e.target.src = `${API_BASE_URL}/uploads/placeholder.jpg`; }}
               alt={modalProduct.name}
               className="w-full h-48 object-contain mb-4 rounded"
@@ -186,12 +230,17 @@ export default function Products() {
                 ))}
               </p>
             </div>
-            <button
-              onClick={(e) => { e.stopPropagation(); handleAddToCart(modalProduct); }}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
-            >
-              Add to Cart
-            </button>
+            
+            {/* Show Add to Cart only for customers in modal */}
+            {!isAdmin && (
+              <button
+                onClick={(e) => { e.stopPropagation(); handleAddToCart(modalProduct); }}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
+              >
+                Add to Cart
+              </button>
+            )}
+            
             <button
               onClick={closeModal}
               className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
@@ -200,6 +249,15 @@ export default function Products() {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Edit product modal - only render for admins */}
+      {isAdmin && editProduct && (
+        <EditProductModal
+          product={editProduct}
+          onClose={closeEditModal}
+          onSave={handleSaveUpdate}
+        />
       )}
     </div>
   );

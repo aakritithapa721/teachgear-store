@@ -1,30 +1,3 @@
-/*import axios from 'axios';
-
-const ApiFormData = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
-    withCredentials: true,
-    headers: {
-        "Content-Type": "multipart/form-data",
-    },
-});
-
-
-const Api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
-    withCredentials: true,
-    headers: {
-        "Content-Type": "application/json",
-    },
-});
-
-
-
-
-
-export const createUserApi = (data) => ApiFormData.post("/api/test/createUsers", data)
-export const LoginUserApi = (data) => Api.post("/api/test/LoginUser", data)
-export const addProductApi = (formData) => ApiFormData.post("/api/products/add", formData); */
-
 import axios from 'axios';
 
 const ApiFormData = axios.create({
@@ -44,10 +17,9 @@ const Api = axios.create({
 });
 
 export const createUserApi = (data) => ApiFormData.post("/api/test/createUsers", data);
-export const LoginUserApi = (data) => Api.post("/api/test/LoginUser", data);
+export const RegisterUserApi = (data) => Api.post("/api/test/createUsers", data);
+export const LoginUserApi = (data) => Api.post("/api/test/loginUser", data); // Fixed: LoginUser -> loginUser
 export const addProductApi = (formData) => ApiFormData.post("/api/products/add", formData);
-
-// Add the new APIs below:
 
 // Fetch products with optional search and category filters
 export const fetchProducts = (search = '', category = '') => {
@@ -57,8 +29,8 @@ export const fetchProducts = (search = '', category = '') => {
   return Api.get(`/api/products?${params.toString()}`).then(res => res.data.products);
 };
 
-// Update product (by ID)
-export const updateProductApi = (productId, data) => Api.post(`/api/products/update/${productId}`, data);
+// Update product (by ID) — changed POST to PUT here
+export const updateProductApi = (productId, data) => Api.put(`/api/products/update/${productId}`, data);
 
 // Delete product (by ID)
 export const deleteProductApi = (productId) => Api.delete(`/api/products/delete/${productId}`);

@@ -13,13 +13,14 @@ const router = express.Router();
 // Use 'image' as fieldname (must match frontend)
 router.post('/add', fileUpload('image'), addProduct);
 router.put('/update/:id', fileUpload('image'), updateProduct);
-router.delete('/delete/:id', deleteProduct);
 
-// ✅ Changed from '/product/:id' to '/:id'
+// Changed DELETE route to accept '/:id' for RESTful consistency
+router.delete('/:id', deleteProduct);
+
+// Get single product
 router.get('/:id', getProduct);
 
-// ✅ Get all products
+// Get all products
 router.get('/', getAllProducts);
 
 module.exports = router;
-
