@@ -9,6 +9,7 @@ export function Buttons({label,onclick,className}) {
 }
 
 
+
 export function Textfields({ text, onChange, placeholder , name }) {
     return (
         <div>
