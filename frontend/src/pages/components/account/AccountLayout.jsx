@@ -12,6 +12,7 @@ const AccountLayout = ({ darkMode }) => {
             <AccountSidebar darkMode={darkMode} />
           </div>
           
+          
           {/* Main Content */}
           <div className="lg:w-3/4">
             <Outlet />
